@@ -108,3 +108,19 @@ def get_staged_diff(cwd: Path | str | None = None) -> str:
         ["diff", "--cached", "--no-color", "--no-ext-diff", "--find-renames"],
         cwd=cwd,
     )
+
+
+def get_staged_name_status(cwd: Path | str | None = None) -> str:
+    """Return staged `--name-status` output, including renames and copies."""
+    return run_git(
+        ["diff", "--cached", "--name-status", "-M", "-C"],
+        cwd=cwd,
+    )
+
+
+def get_staged_numstat(cwd: Path | str | None = None) -> str:
+    """Return staged `--numstat` output, including renames and copies."""
+    return run_git(
+        ["diff", "--cached", "--numstat", "-M", "-C"],
+        cwd=cwd,
+    )
