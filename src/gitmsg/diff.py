@@ -67,6 +67,22 @@ def language_for(path: str) -> str:
     return _LANGUAGE_BY_EXTENSION.get(ext, "unknown")
 
 
+def unquote_git_path(path: str) -> str:
+    """Decode Git C-quoted paths such as `"\\350\\257\\264.py"`."""
+    if len(path) >= 2 and path.startswith('"') and path.endswith('"'):
+        inner = path[1:-1]
+        try:
+            return (
+                inner.encode("utf-8")
+                .decode("unicode_escape")
+                .encode("latin-1")
+                .decode("utf-8")
+            )
+        except UnicodeError:
+            return inner
+    return path
+
+
 def split_rename_path(field: str) -> tuple[str, str]:
     """Split a Git numstat/summary path that may include ` => `."""
     match = _RENAME_FIELD.match(field)
@@ -96,18 +112,18 @@ def parse_name_status(text: str) -> list[FileChange]:
         if letter == "R":
             if len(parts) < 3:
                 continue
-            old_path, path = parts[1], parts[2]
+            old_path, path = unquote_git_path(parts[1]), unquote_git_path(parts[2])
             status = ChangeStatus.RENAMED
         elif letter == "C":
             if len(parts) < 3:
                 continue
-            old_path, path = parts[1], parts[2]
+            old_path, path = unquote_git_path(parts[1]), unquote_git_path(parts[2])
             status = ChangeStatus.COPIED
         else:
             status = _STATUS_LETTERS.get(letter)
             if status is None:
                 continue
-            path = parts[1]
+            path = unquote_git_path(parts[1])
             old_path = None
         files.append(
             FileChange(
@@ -133,7 +149,7 @@ def parse_numstat(text: str) -> dict[str, tuple[int, int, bool]]:
         if len(parts) < 3:
             continue
         added, removed, path_field = parts[0], parts[1], parts[2]
-        _, new_path = split_rename_path(path_field)
+        _, new_path = split_rename_path(unquote_git_path(path_field))
         if added == "-" or removed == "-":
             stats[new_path] = (0, 0, True)
             continue

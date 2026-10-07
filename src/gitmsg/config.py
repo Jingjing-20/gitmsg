@@ -30,6 +30,10 @@ def default_config() -> GitMsgConfig:
 def _as_int(value: object, field: str) -> int:
     if isinstance(value, bool) or not isinstance(value, int):
         raise ConfigError(f"Invalid {field}: expected an integer.")
+    if field == "max_message_length" and not 8 <= value <= 200:
+        raise ConfigError(
+            "Invalid max_message_length: expected an integer from 8 to 200."
+        )
     return value
 
 

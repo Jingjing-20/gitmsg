@@ -13,13 +13,17 @@ from gitmsg.exceptions import (
 )
 
 GIT_EXECUTABLE = "git"
+_GIT_PREFIX = ["-c", "core.quotepath=false"]
 
 
 def _git_env() -> dict[str, str]:
     env = os.environ.copy()
-    env.setdefault("LC_ALL", "C")
     env["GIT_TERMINAL_PROMPT"] = "0"
     return env
+
+
+def _git_command(args: list[str]) -> list[str]:
+    return [GIT_EXECUTABLE, *_GIT_PREFIX, *args]
 
 
 def run_git(
@@ -34,7 +38,7 @@ def run_git(
     working_dir = Path(cwd) if cwd is not None else Path.cwd()
     try:
         result = subprocess.run(
-            [GIT_EXECUTABLE, *args],
+            _git_command(args),
             cwd=working_dir,
             capture_output=True,
             text=True,
@@ -74,7 +78,7 @@ def has_staged_changes(cwd: Path | str | None = None) -> bool:
     working_dir = Path(cwd) if cwd is not None else Path.cwd()
     try:
         result = subprocess.run(
-            [GIT_EXECUTABLE, "diff", "--cached", "--quiet"],
+            _git_command(["diff", "--cached", "--quiet"]),
             cwd=working_dir,
             capture_output=True,
             text=True,

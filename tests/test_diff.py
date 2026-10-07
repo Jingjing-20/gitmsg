@@ -11,6 +11,7 @@ from gitmsg.diff import (
     parse_staged_changes,
     parse_staged_metadata,
     split_rename_path,
+    unquote_git_path,
 )
 from gitmsg.models import ChangeStatus
 
@@ -20,6 +21,12 @@ def test_language_for_common_extensions() -> None:
     assert language_for("src/app.ts") == "TypeScript"
     assert language_for("README.md") == "Markdown"
     assert language_for("unknown.xyz") == "unknown"
+
+
+def test_unquote_git_path_octal_utf8() -> None:
+    quoted = '"\\350\\257\\264\\346\\230\\216.py"'
+    assert unquote_git_path(quoted) == "说明.py"
+    assert unquote_git_path("src/app.py") == "src/app.py"
 
 
 def test_split_rename_path_with_braces() -> None:
