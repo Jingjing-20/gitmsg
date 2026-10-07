@@ -166,6 +166,8 @@ python -m compileall src
 
 ## Project status
 
+The Python package skeleton is in place. The CLI and analysis engine are still being implemented.
+
 GitMsg is being developed as a production-quality MVP with an emphasis on:
 
 - simple architecture
