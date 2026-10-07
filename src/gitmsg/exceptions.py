@@ -37,3 +37,7 @@ class GitCommandError(GitMsgError):
         self.args_list = args
         self.returncode = returncode
         self.stderr = stderr
+
+
+class ConfigError(GitMsgError):
+    """Raised when `.gitmsg/config.toml` cannot be read or parsed."""
