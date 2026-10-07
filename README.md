@@ -4,6 +4,10 @@
 
 GitMsg helps developers turn staged changes into concise, useful commit messages without automatically creating the commit.
 
+## Motivation
+
+Writing a good commit message is easier after the change is already staged, but `git commit` still asks for the message first. GitMsg inspects the staged diff, classifies the change, and suggests a Conventional Commit so you can paste or type it yourself.
+
 ## How it works
 
 ```text
@@ -28,23 +32,23 @@ Copy message to clipboard
 
 ## Example
 
+After staging a new function such as `add_project_filtering` in `src/projects.py`:
+
 ```text
 GitMsg
 
 Analyzing staged changes...
 
-Files changed: 3
-Insertions: +54
-Deletions: -12
+Files changed: 1
+Insertions: +2
+Deletions: -0
 
 Detected changes:
-  • Added project filtering
-  • Added category state
-  • Updated project rendering
+  • Add project filtering
 
 Change type: feat
 Scope: projects
-Confidence: 93%
+Confidence: 78%
 
 Suggested commit:
 
@@ -61,11 +65,11 @@ git commit -m "feat(projects): add project filtering"
 
 ## Features
 
-- Analyze staged Git changes
-- Detect added, modified, deleted, and renamed files
+- Analyze staged Git changes only (`git diff --cached`)
+- Detect added, modified, deleted, renamed, and copied files
 - Analyze file types and change signals
 - Classify changes using Conventional Commits
-- Detect scope when confidence is sufficient
+- Detect scope when the paths are consistent enough
 - Provide a heuristic confidence score
 - Detect potentially mixed changes
 - Copy generated messages to the clipboard
@@ -87,6 +91,8 @@ GitMsg uses the Git CLI through Python's `subprocess` rather than requiring GitP
 
 ## Installation
 
+Requires Python 3.11+ and Git on PATH.
+
 Development installation:
 
 ```bash
@@ -96,7 +102,14 @@ pip install -e .
 Then:
 
 ```bash
-gitmsg
+gitmsg --help
+gitmsg --version
+```
+
+On Windows, if `gitmsg` is not found, either add your user Scripts directory to PATH or run:
+
+```bash
+python -m gitmsg --help
 ```
 
 ## Basic usage
@@ -107,54 +120,84 @@ Stage your changes first:
 git add .
 ```
 
-Then run:
+Then run GitMsg from anywhere inside the repository:
 
 ```bash
 gitmsg
 ```
 
-Other modes:
+If nothing is staged:
+
+```text
+No staged changes found.
+
+Stage your changes first:
+
+  git add <files>
+```
+
+## CLI commands
+
+| Command | Behavior |
+| --- | --- |
+| `gitmsg` | Analyze staged changes, suggest a message, copy it |
+| `gitmsg --help` | Show help |
+| `gitmsg --version` | Show the version |
+| `gitmsg --analyze` | Show analysis only (no generated message, no copy) |
+| `gitmsg --dry-run` | Generate and display a message without copying |
+| `gitmsg --suggest` | Show alternative messages when they are useful |
+| `gitmsg init` | Create optional `.gitmsg/config.toml` |
+
+`--suggest` prints multiple candidates when scoring is close. In an interactive terminal you can select one; otherwise GitMsg uses the first suggestion.
+
+## Configuration
+
+Normal usage does not require initialization.
 
 ```bash
-gitmsg --help
-gitmsg --version
-gitmsg --analyze
-gitmsg --dry-run
-gitmsg --suggest
 gitmsg init
 ```
 
-## Local-first and deterministic
-
-The MVP does not require OpenAI, Anthropic, Gemini, OpenRouter, or another hosted LLM.
-
-The core analysis and message generation are designed to work locally and deterministically.
-
-An optional AI/LLM layer may be considered in the future for message refinement, but it is not required for GitMsg to function.
-
-## Development
-
-GitMsg is developed incrementally with the following workflow:
+creates:
 
 ```text
-INSPECT
-   ↓
-PLAN
-   ↓
-IMPLEMENT
-   ↓
-TEST
-   ↓
-REVIEW
-   ↓
-FIX
-   ↓
-VERIFY
-   ↓
-COMMIT
-   ↓
-PUSH
+.gitmsg/config.toml
 ```
+
+and adds `.gitmsg/` to `.gitignore` if it is missing.
+
+Example:
+
+```toml
+[gitmsg]
+max_message_length = 72
+copy_to_clipboard = true
+default_scope = ""
+```
+
+- `max_message_length`: integer from 8 to 200
+- `copy_to_clipboard`: `true` or `false`
+- `default_scope`: optional scope used when inference is empty
+
+Malformed configuration produces an actionable error instead of a traceback.
+
+## Architecture
+
+```text
+src/gitmsg/
+  cli.py          CLI commands, output, modes
+  git.py          repository detection and Git CLI
+  diff.py         staged diff parsing and statistics
+  analyzer.py     categories, signals, mixed-change notice
+  classifier.py   Conventional Commit type, scope, confidence
+  generator.py    imperative message formatting
+  clipboard.py    clipboard copy with graceful failure
+  config.py       optional .gitmsg/config.toml
+  models.py       dataclasses
+  exceptions.py   expected application errors
+```
+
+## Development
 
 Quality checks:
 
@@ -164,19 +207,32 @@ ruff check .
 python -m compileall src
 ```
 
-## Project status
+Install with development extras:
 
-The installable `gitmsg` CLI currently supports `--help` and `--version`. Repository analysis is still being implemented.
+```bash
+pip install -e ".[dev]"
+```
 
-GitMsg is being developed as a production-quality MVP with an emphasis on:
+## Testing
 
-- simple architecture
-- deterministic behavior
-- realistic Git integration
-- useful analysis rather than vague commit messages
-- strong test coverage
-- safe Git operations
-- Windows compatibility
+Tests cover repository detection, staged diffs, analysis, classification, generation, clipboard failure, CLI modes, configuration, and Git integration using temporary repositories.
+
+```bash
+pytest
+```
+
+## Limitations
+
+- Classification is deterministic and heuristic, not statistically calibrated.
+- GitMsg does not understand every language or every kind of change.
+- Mixed staged changes are reported; GitMsg never unstages, resets, or splits commits.
+- Clipboard access can fail depending on the desktop environment.
+- The MVP does not call any external AI/LLM API.
+
+## Roadmap
+
+- Keep improving signal quality and scope inference
+- Optional local LLM refinement after the deterministic engine (not required)
 
 ## License
 
