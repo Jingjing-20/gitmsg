@@ -51,7 +51,7 @@ index 111..222 100644
         raw,
     )
     result = analyze(parsed)
-    assert "Added add project filtering" in result.summaries
+    assert "Add project filtering" in result.summaries
     assert "source" in result.categories
     assert any(signal.kind == "added_function" for signal in result.signals)
 

@@ -98,10 +98,30 @@ _MIXED_GROUPS = {
 }
 
 
+_LEADING_IDENTIFIER_VERBS = (
+    "add",
+    "update",
+    "remove",
+    "delete",
+    "fix",
+    "handle",
+    "create",
+    "rename",
+)
+
+
 def humanize_identifier(name: str) -> str:
     spaced = re.sub(r"([a-z0-9])([A-Z])", r"\1 \2", name)
     spaced = spaced.replace("_", " ").replace("-", " ")
     return re.sub(r"\s+", " ", spaced).strip().lower()
+
+
+def _named_change_summary(action: str, name: str) -> str:
+    human = humanize_identifier(name)
+    first, _, rest = human.partition(" ")
+    if first in _LEADING_IDENTIFIER_VERBS and rest:
+        return f"{first.capitalize()} {rest}"
+    return f"{action} {human}"
 
 
 def categorize_path(path: str) -> str:
@@ -189,7 +209,7 @@ def analyze_file_signals(file: FileChange, raw_diff: str) -> list[ChangeSignal]:
         signals.append(
             ChangeSignal(
                 kind="added_function",
-                summary=f"Added {humanize_identifier(name)}",
+                summary=_named_change_summary("Added", name),
                 path=file.path,
                 weight=3,
             )
@@ -198,7 +218,7 @@ def analyze_file_signals(file: FileChange, raw_diff: str) -> list[ChangeSignal]:
         signals.append(
             ChangeSignal(
                 kind="deleted_function",
-                summary=f"Deleted {humanize_identifier(name)}",
+                summary=_named_change_summary("Deleted", name),
                 path=file.path,
                 weight=3,
             )
