@@ -37,6 +37,9 @@ dev = [
     "ruff>=0.6",
 ]
 
+[project.scripts]
+gitmsg = "gitmsg.cli:run"
+
 [project.urls]
 Homepage = "https://github.com/Jingjing-20/gitmsg"
 Repository = "https://github.com/Jingjing-20/gitmsg.git"

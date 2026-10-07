@@ -166,7 +166,7 @@ python -m compileall src
 
 ## Project status
 
-The Python package skeleton is in place. The CLI and analysis engine are still being implemented.
+The installable `gitmsg` CLI currently supports `--help` and `--version`. Repository analysis is still being implemented.
 
 GitMsg is being developed as a production-quality MVP with an emphasis on:
 
