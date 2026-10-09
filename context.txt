@@ -1,0 +1,104 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+PS C:\Users\USER> cd C:\PROJECTS\porpolyo
+PS C:\PROJECTS\porpolyo> git add .
+PS C:\PROJECTS\porpolyo> python -m gitmsg
+>>
+GitMsg
+
+Analyzing staged changes...
+
+Files changed: 5
+Insertions: +14
+Deletions: -14
+
+Detected changes:
+  • Updated Projects
+  • Updated DeployedPage
+  • Updated PersonalPage
+  • Updated deployed data
+  • Updated personal data
+
+Change type: feat
+Scope: projects
+Confidence: 70%
+
+Suggested commit:
+
+  feat(projects): update Projects
+
+✓ Copied to clipboard
+PS C:\PROJECTS\porpolyo> git commit -m "feat(projects): update Projects"
+[main 0bf3214] feat(projects): update Projects
+ 5 files changed, 14 insertions(+), 14 deletions(-)
+PS C:\PROJECTS\porpolyo> git push -u origin main
+Enumerating objects: 25, done.
+Counting objects: 100% (25/25), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (13/13), done.
+Writing objects: 100% (13/13), 1.37 KiB | 700.00 KiB/s, done.
+Total 13 (delta 9), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (9/9), completed with 9 local objects.
+To https://github.com/Jingjing-20/portfolio.git
+   7c25777..0bf3214  main -> main
+branch 'main' set up to track 'origin/main'.
+PS C:\PROJECTS\porpolyo>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                         git add .
+PS C:\PROJECTS\porpolyo> python -m gitmsg
+>>
+GitMsg
+
+Analyzing staged changes...
+
+Files changed: 6
+Insertions: +39
+Deletions: -4
+
+Detected changes:
+  • Updated Projects
+  • Updated DeployedPage
+  • Updated MockupPage
+  • Updated PersonalPage
+  • Added gitmsg
+  • Updated personal data
+
+Change type: feat
+Scope: projects
+Confidence: 70%
+
+Suggested commit:
+
+  feat(projects): update Projects
+
+✓ Copied to clipboard
+PS C:\PROJECTS\porpolyo> git commit -m "feat(projects): update Projects"
+[main 503b067] feat(projects): update Projects
+ 6 files changed, 39 insertions(+), 4 deletions(-)
+ create mode 100644 src/components/resume_sections/projects/personal/gitmsg/gitmsg.webp
+PS C:\PROJECTS\porpolyo> git push -u origin main
+Enumerating objects: 25, done.
+Counting objects: 100% (25/25), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (13/13), done.
+Writing objects: 100% (14/14), 97.91 KiB | 8.90 MiB/s, done.
+Total 14 (delta 9), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (9/9), completed with 9 local objects.
+To https://github.com/Jingjing-20/portfolio.git
+   0bf3214..503b067  main -> main
+branch 'main' set up to track 'origin/main'.
