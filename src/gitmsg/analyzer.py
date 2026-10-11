@@ -288,6 +288,42 @@ def analyze_file_signals(file: FileChange, raw_diff: str) -> list[ChangeSignal]:
     return signals
 
 
+_GENERIC_PARENTS = {
+    "src",
+    "lib",
+    "libs",
+    "app",
+    "apps",
+    "source",
+    "code",
+    "pkg",
+    "packages",
+    "components",
+    "pages",
+    "public",
+    "dist",
+    "build",
+    "assets",
+    "resources",
+}
+
+_SHORT_STEM_THRESHOLD = 6
+
+
+def _descriptive_label(path: str) -> str:
+    """Build a human label from a file path, including the parent directory
+    when the stem is too short to be meaningful on its own
+    (e.g. ``data/deployed.json`` -> ``deployed data``)."""
+    posix = path.replace("\\", "/")
+    parts = posix.split("/")
+    stem = Path(posix).stem.replace("_", " ").replace("-", " ")
+    if len(parts) >= 2 and len(stem) <= _SHORT_STEM_THRESHOLD:
+        parent = parts[-2].replace("_", " ").replace("-", " ")
+        if parent.lower() not in _GENERIC_PARENTS and parent.lower() != stem.lower():
+            return f"{stem} {parent}".strip()
+    return stem
+
+
 def _file_summaries(file: FileChange, signals: list[ChangeSignal]) -> list[str]:
     named = [
         signal.summary
@@ -296,7 +332,7 @@ def _file_summaries(file: FileChange, signals: list[ChangeSignal]) -> list[str]:
     ]
     if named:
         return named
-    label = Path(file.path).stem.replace("_", " ").replace("-", " ")
+    label = _descriptive_label(file.path)
     if file.status == ChangeStatus.ADDED:
         return [f"Added {label}"]
     if file.status == ChangeStatus.DELETED:
