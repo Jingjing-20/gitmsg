@@ -65,7 +65,7 @@ src/gitmsg/
 ├── diff.py         # Parse git diff output, extract statistics
 ├── analyzer.py     # Analyze changes, detect patterns
 ├── classifier.py   # Classify commit type and scope
-├── generator.py    # Generate commit message text
+├── generator.py    # Generate commit message text (combines multiple change summaries)
 ├── clipboard.py    # Clipboard integration
 ├── config.py       # Configuration loading
 ├── models.py       # Data classes

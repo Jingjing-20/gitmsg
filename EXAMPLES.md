@@ -116,7 +116,7 @@ Confidence: 85%
 
 Suggested commit:
 
-  feat(api): add user and authentication endpoints
+  feat(api): add user api, authentication api, api tests
 
 ✓ Copied to clipboard
 ```

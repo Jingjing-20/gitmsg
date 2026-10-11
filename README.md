@@ -42,6 +42,7 @@ Copy message to clipboard
 - **Automatic Classification** — Determines the Conventional Commit type (`feat`, `fix`, `refactor`, `docs`, `style`, `test`, `chore`, `build`, `ci`, `perf`)
 - **Scope Inference** — Detects the scope from file paths when consistent enough (e.g., `feat(auth):`, `fix(api):`)
 - **Confidence Scoring** — Provides a heuristic confidence percentage for the suggested message
+- **Multi-Change Descriptions** — Combines multiple staged changes into one description, collapsing shared verbs into `verb a, b, c` and appending `and more` when the length limit is reached
 - **Mixed Change Detection** — Warns when staged changes span multiple unrelated concerns
 - **Clipboard Integration** — Automatically copies the generated message for quick pasting
 - **Multiple CLI Modes** — Default, `--analyze`, `--dry-run`, and `--suggest` modes
